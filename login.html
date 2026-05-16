@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SunRayNEWS Auth</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#111827;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:20px;
+        }
+
+        .auth-box{
+            background:white;
+            width:100%;
+            max-width:400px;
+            padding:30px;
+            border-radius:20px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:25px;
+            color:#111827;
+        }
+
+        input{
+            width:100%;
+            padding:14px;
+            margin-bottom:15px;
+            border:1px solid #ccc;
+            border-radius:10px;
+            font-size:16px;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            background:#111827;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            margin-bottom:10px;
+        }
+
+        button:hover{
+            background:#374151;
+        }
+
+        .switch-btn{
+            background:#e5e7eb;
+            color:#111827;
+        }
+
+        .message{
+            text-align:center;
+            margin-top:10px;
+            color:red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="auth-box">
+
+        <h1 id="title">
+            Admin Login
+        </h1>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Password"
+        >
+
+        <button onclick="submitForm()" id="mainBtn">
+            Login
+        </button>
+
+        <button
+            class="switch-btn"
+            onclick="toggleMode()"
+            id="switchBtn"
+        >
+            Create Account
+        </button>
+
+        <p class="message" id="message"></p>
+
+    </div>
+
+    <script>
+
+        let loginMode = true;
+
+        // TOGGLE LOGIN / SIGNUP
+
+        function toggleMode(){
+
+            loginMode = !loginMode;
+
+            const title =
+                document.getElementById("title");
+
+            const mainBtn =
+                document.getElementById("mainBtn");
+
+            const switchBtn =
+                document.getElementById("switchBtn");
+
+            const message =
+                document.getElementById("message");
+
+            message.innerHTML = "";
+
+            if(loginMode){
+
+                title.innerHTML =
+                    "Admin Login";
+
+                mainBtn.innerHTML =
+                    "Login";
+
+                switchBtn.innerHTML =
+                    "Create Account";
+
+            }else{
+
+                title.innerHTML =
+                    "Create Account";
+
+                mainBtn.innerHTML =
+                    "Sign Up";
+
+                switchBtn.innerHTML =
+                    "Back To Login";
+
+            }
+
+        }
+
+        // MAIN ACTION
+
+        function submitForm(){
+
+            const username =
+                document.getElementById("username")
+                .value.trim();
+
+            const password =
+                document.getElementById("password")
+                .value.trim();
+
+            const message =
+                document.getElementById("message");
+
+            if(!username || !password){
+
+                message.innerHTML =
+                    "Fill all fields";
+
+                return;
+            }
+
+            let users =
+                JSON.parse(
+                    localStorage.getItem("users")
+                ) || [];
+
+            // LOGIN
+
+            if(loginMode){
+
+                const user = users.find(
+                    u =>
+                    u.username === username &&
+                    u.password === password
+                );
+
+                if(user){
+
+                    localStorage.setItem(
+                        "adminLoggedIn",
+                        "true"
+                    );
+
+                    localStorage.setItem(
+                        "currentAdmin",
+                        username
+                    );
+
+                    window.location.href =
+                        "admin.html";
+
+                }else{
+
+                    message.innerHTML =
+                        "Invalid login details";
+
+                }
+
+            }
+
+            // CREATE ACCOUNT
+
+            else{
+
+                const exists = users.find(
+                    u => u.username === username
+                );
+
+                if(exists){
+
+                    message.innerHTML =
+                        "Username already exists";
+
+                    return;
+                }
+
+                users.push({
+                    username,
+                    password
+                });
+
+                localStorage.setItem(
+                    "users",
+                    JSON.stringify(users)
+                );
+
+                message.style.color = "green";
+
+                message.innerHTML =
+                    "Account created successfully";
+
+                toggleMode();
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

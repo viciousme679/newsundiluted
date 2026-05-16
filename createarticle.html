@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Article</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    
+    body {
+      background: #f3f4f6;
+      padding: 20px;
+      transition: 0.3s;
+    }
+    
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .topbar h2 {
+      font-size: 24px;
+    }
+    
+    .dark-btn {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .form-section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    button {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background: #15803d;
+    }
+    
+    img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      margin-top: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+    
+    .dark-mode {
+      background: #111827;
+      color: white;
+    }
+    
+    .dark-mode .topbar,
+    .dark-mode .form-section {
+      background: #1f2937;
+      color: white;
+    }
+    
+    .dark-mode input,
+    .dark-mode textarea {
+      background: #374151;
+      color: white;
+      border: 1px solid #555;
+    }
+  </style>
+  
+</head>
+
+<body>
+  
+  <div class="topbar">
+    <h2>Create New Article</h2>
+    <button id="darkModeBtn" class="dark-btn">🌙</button>
+  </div>
+  
+  <section class="form-section">
+    
+    <form id="postForm">
+      
+      <div class="form-group">
+        <label>Article Title</label>
+        <input type="text" id="title" placeholder="Enter article title">
+      </div>
+      
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" id="author" placeholder="e.g John Doe">
+      </div>
+      
+      <div class="form-group">
+        <label>Excerpt</label>
+        <textarea id="excerpt" placeholder="Short summary"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Article Content</label>
+        <textarea id="content" placeholder="Write your article here..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Upload News Image</label>
+        <input type="file" id="image" accept="image/*">
+        <img id="preview">
+      </div>
+      
+      <button type="submit">Publish Article</button>
+      
+    </form>
+    
+  </section>
+  
+  <script>
+    if (
+      localStorage.getItem(
+        "adminLoggedIn"
+      ) !== "true"
+    ) {
+      
+      window.location.href =
+        "login.html";
+      
+    }
+    
+    // SLUG FUNCTION
+    function createSlug(title) {
+      return title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9 ]/g, "")
+        .replace(/\s+/g, "-");
+    }
+    
+    let imageData = "";
+    
+    // IMAGE PREVIEW
+    document.getElementById("image").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        imageData = event.target.result;
+        const preview = document.getElementById("preview");
+        preview.src = imageData;
+        preview.style.display = "block";
+      };
+      
+      reader.readAsDataURL(file);
+    });
+    
+    // DARK MODE
+    const darkBtn = document.getElementById("darkModeBtn");
+    
+    if (localStorage.getItem("darkMode") === "enabled") {
+      document.body.classList.add("dark-mode");
+    }
+    
+    darkBtn.onclick = () => {
+      document.body.classList.toggle("dark-mode");
+      
+      localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark-mode") ? "enabled" : "disabled"
+      );
+    };
+    
+    // AUTO FILL ADMIN NAME
+    
+    const savedAdmin =
+      localStorage.getItem("currentAdmin");
+    
+    if (savedAdmin) {
+      
+      document.getElementById("author").value =
+        savedAdmin;
+      
+    }
+    // SUBMIT POST
+    const form = document.getElementById("postForm");
+    
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById("title").value;
+      const author =
+        document.getElementById("author").value ||
+        localStorage.getItem("currentAdmin") ||
+        "Admin";
+      const excerpt = document.getElementById("excerpt").value;
+      const content = document.getElementById("content").value;
+      
+      if (!title || !content) {
+        alert("Please fill all required fields");
+        return;
+      }
+      
+      let posts = JSON.parse(localStorage.getItem("posts")) || [];
+      
+      const slug = createSlug(title) + "-" + Date.now();
+      
+      const newPost = {
+        id: Date.now(),
+        title,
+        author: author || "Admin",
+        excerpt,
+        content,
+        image: imageData,
+        likes: 0,
+        comments: [],
+        date: new Date().toLocaleDateString(),
+        
+        // 🔥 NEW FIELDS
+        slug: slug,
+        url: "story/" + slug
+      };
+      
+      posts.unshift(newPost);
+      localStorage.setItem("posts", JSON.stringify(posts));
+      
+      let activities =
+    JSON.parse(localStorage.getItem("activities")) || [];
+
+activities.unshift({
+    text: "📰 New article published: " + title,
+    time: new Date().toLocaleTimeString()
+});
+
+localStorage.setItem(
+    "activities",
+    JSON.stringify(activities)
+);
+      alert("Article Published Successfully!");
+      
+      form.reset();
+      document.getElementById("preview").style.display = "none";
+      imageData = "";
+    });
+  </script>
+  
+</body>
+
+</html>

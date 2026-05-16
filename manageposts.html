@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Posts</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      transition: 0.3s;
+      padding: 20px;
+    }
+    
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark-btn {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+    
+    .dark-btn:hover {
+      background: #374151;
+    }
+    
+    /* TABLE */
+    .posts-table {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    
+    th {
+      background: #f9fafb;
+    }
+    
+    /* DARK MODE */
+    .dark-mode {
+      background: #111827;
+      color: white;
+    }
+    
+    .dark-mode .topbar,
+    .dark-mode .posts-table {
+      background: #1f2937;
+      color: white;
+    }
+    
+    .dark-mode th {
+      background: #374151;
+    }
+    
+    .dark-mode td {
+      border-color: #374151;
+    }
+    
+    .dark-mode a {
+      color: white;
+    }
+  </style>
+  
+</head>
+
+<body>
+  
+  <!-- TOP BAR -->
+  <div class="topbar">
+    
+    <h2>Manage Posts</h2>
+    
+    <button id="darkModeBtn" class="dark-btn">
+      🌙
+    </button>
+    
+  </div>
+  
+  <!-- TABLE -->
+  <section class="posts-table">
+    
+    <table>
+      
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody id="postsTable"></tbody>
+      
+    </table>
+    
+  </section>
+  
+  <script src="script2.js"></script>
+  
+  <script>
+    if (
+      localStorage.getItem(
+        "adminLoggedIn"
+      ) !== "true"
+    ) {
+      
+      window.location.href =
+        "login.html";
+      
+    }
+    
+    
+    // DARK MODE
+    
+    const darkBtn =
+      document.getElementById("darkModeBtn");
+    
+    // Load saved mode
+    if (localStorage.getItem("darkMode") === "enabled") {
+      document.body.classList.add("dark-mode");
+    }
+    
+    // Toggle dark mode
+    darkBtn.onclick = () => {
+      
+      document.body.classList.toggle("dark-mode");
+      
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+      } else {
+        localStorage.setItem("darkMode", "disabled");
+      }
+      
+    };
+    
+    // LOAD POSTS
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+    
+    const postsTable =
+      document.getElementById("postsTable");
+    
+    // DISPLAY POSTS
+    function displayPosts() {
+      
+      postsTable.innerHTML = "";
+      
+      // Empty state
+      if (posts.length === 0) {
+        
+        postsTable.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align:center;padding:30px;">
+          No posts available
+        </td>
+      </tr>
+    `;
+        
+        return;
+      }
+      
+      // SHOW POSTS
+      posts.forEach((post, index) => {
+        
+        postsTable.innerHTML += `
+      <tr>
+
+        <td>
+          ${post.title}
+        </td>
+
+        <td>
+          ${post.date || "No Date"}
+        </td>
+
+        <td>
+          Published
+        </td>
+
+        <td>
+
+          <button
+            onclick="viewPost(${index})"
+            style="
+              background:#2563eb;
+              color:white;
+              border:none;
+              padding:8px 12px;
+              border-radius:6px;
+              cursor:pointer;
+              margin-right:5px;
+            "
+          >
+            View
+          </button>
+
+          <button
+            onclick="editPost(${index})"
+            style="
+              background:#f59e0b;
+              color:white;
+              border:none;
+              padding:8px 12px;
+              border-radius:6px;
+              cursor:pointer;
+              margin-right:5px;
+            "
+          >
+            Edit
+          </button>
+
+          <button
+            onclick="deletePost(${index})"
+            style="
+              background:#dc2626;
+              color:white;
+              border:none;
+              padding:8px 12px;
+              border-radius:6px;
+              cursor:pointer;
+            "
+          >
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+    `;
+        
+      });
+      
+    }
+    
+    // VIEW POST
+    function viewPost(index) {
+      
+      const post = posts[index];
+      
+      alert(
+        "TITLE: " + post.title +
+        "\n\nAUTHOR: " + post.author +
+        "\n\nCONTENT:\n" + post.content
+      );
+      
+    }
+    
+    // EDIT POST
+    function editPost(index) {
+      
+      const post = posts[index];
+      
+      const newTitle = prompt(
+        "Edit Title",
+        post.title
+      );
+      
+      if (newTitle === null) return;
+      
+      const newExcerpt = prompt(
+        "Edit Excerpt",
+        post.excerpt
+      );
+      
+      if (newExcerpt === null) return;
+      
+      const newContent = prompt(
+        "Edit Content",
+        post.content
+      );
+      
+      if (newContent === null) return;
+      
+      // UPDATE
+      post.title = newTitle;
+      post.excerpt = newExcerpt;
+      post.content = newContent;
+      
+      // SAVE
+      localStorage.setItem(
+        "posts",
+        JSON.stringify(posts)
+      );
+      
+      alert("Post Updated");
+      
+      displayPosts();
+      
+    }
+    
+    // DELETE POST
+    function deletePost(index) {
+      
+      const confirmDelete = confirm(
+        "Delete this post?"
+      );
+      
+      if (!confirmDelete) return;
+      
+      posts.splice(index, 1);
+      
+      localStorage.setItem(
+        "posts",
+        JSON.stringify(posts)
+      );
+      
+      displayPosts();
+      
+    }
+    
+    // START
+    displayPosts();
+  </script>
+  
+</body>
+
+</html>
