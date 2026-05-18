@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Posts</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      transition: 0.3s;
+      padding: 20px;
+    }
+    
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark-btn {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: 0.3s;
+    }
+    
+    .dark-btn:hover {
+      background: #374151;
+    }
+    
+    /* TABLE */
+    .posts-table {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    
+    th {
+      background: #f9fafb;
+    }
+    
+    /* DARK MODE */
+    .dark-mode {
+      background: #111827;
+      color: white;
+    }
+    
+    .dark-mode .topbar,
+    .dark-mode .posts-table {
+      background: #1f2937;
+      color: white;
+    }
+    
+    .dark-mode th {
+      background: #374151;
+    }
+    
+    .dark-mode td {
+      border-color: #374151;
+    }
+    
+    .dark-mode a {
+      color: white;
+    }
+  </style>
+  
+</head>
+
+<body>
+  
+  <!-- TOP BAR -->
+  <div class="topbar">
+    
+    <h2>Manage Posts</h2>
+    
+    <button id="darkModeBtn" class="dark-btn">
+      🌙
+    </button>
+    
+  </div>
+  
+  <!-- TABLE -->
+  <section class="posts-table">
+    
+    <table>
+      
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody id="postsTable"></tbody>
+      
+    </table>
+    
+  </section>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+    
+    import {
+      
+      getFirestore,
+      collection,
+      getDocs,
+      deleteDoc,
+      doc,
+      updateDoc
+      
+    }
+    
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+    
+    // =========================
+    // FIREBASE CONFIG
+    // =========================
+    
+    const firebaseConfig = {
+      
+      apiKey: "AIzaSyB06tEmKKCLeA8bOhTWb_wE08I8V-1DduM",
+      
+      authDomain: "sunraynews-5443b.firebaseapp.com",
+      
+      projectId: "sunraynews-5443b",
+      
+      storageBucket: "sunraynews-5443b.firebasestorage.app",
+      
+      messagingSenderId: "1061115545146",
+      
+      appId: "1:1061115545146:web:f3a70f1efb304637809703",
+      
+      measurementId: "G-3WT5TKZW27"
+      
+    };
+    
+    // =========================
+    // INITIALIZE
+    // =========================
+    
+    const app = initializeApp(firebaseConfig);
+    
+    const db = getFirestore(app);
+    
+    // =========================
+    // LOGIN CHECK
+    // =========================
+    
+    if (
+      localStorage.getItem(
+        "adminLoggedIn"
+      ) !== "true"
+    ) {
+      
+      window.location.href =
+        "login.html";
+      
+    }
+    
+    // =========================
+    // DARK MODE
+    // =========================
+    
+    const darkBtn =
+      document.getElementById(
+        "darkModeBtn"
+      );
+    
+    if (
+      localStorage.getItem(
+        "darkMode"
+      ) === "enabled"
+    ) {
+      
+      document.body.classList.add(
+        "dark-mode"
+      );
+      
+    }
+    
+    darkBtn.onclick = () => {
+      
+      document.body.classList.toggle(
+        "dark-mode"
+      );
+      
+      localStorage.setItem(
+        
+        "darkMode",
+        
+        document.body.classList.contains(
+          "dark-mode"
+        ) ?
+        "enabled" :
+        "disabled"
+        
+      );
+      
+    };
+    
+    // =========================
+    // POSTS
+    // =========================
+    
+    const postsTable =
+      document.getElementById(
+        "postsTable"
+      );
+    
+    let posts = [];
+    
+    // =========================
+    // LOAD POSTS
+    // =========================
+    
+    async function loadPosts() {
+      
+      posts = [];
+      
+      postsTable.innerHTML = `
+        <tr>
+            <td colspan="4" style="text-align:center;padding:30px;">
+                Loading posts...
+            </td>
+        </tr>
+    `;
+      
+      const querySnapshot =
+        await getDocs(
+          collection(db, "posts")
+        );
+      
+      querySnapshot.forEach((docSnap) => {
+        
+        posts.push({
+          
+          firebaseId: docSnap.id,
+          
+          ...docSnap.data()
+          
+        });
+        
+      });
+      
+      displayPosts();
+      
+    }
+    
+    // =========================
+    // DISPLAY POSTS
+    // =========================
+    
+    function displayPosts() {
+      
+      postsTable.innerHTML = "";
+      
+      // EMPTY
+      if (posts.length === 0) {
+        
+        postsTable.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center;padding:30px;">
+                    No posts available
+                </td>
+            </tr>
+        `;
+        
+        return;
+        
+      }
+      
+      // POSTS
+      posts.forEach((post, index) => {
+        
+        postsTable.innerHTML += `
+
+        <tr>
+
+            <td>
+                ${post.title}
+            </td>
+
+            <td>
+                ${post.date || "No Date"}
+            </td>
+
+            <td>
+                Published
+            </td>
+
+            <td>
+
+                <button
+
+                    onclick="viewPost(${index})"
+
+                    style="
+                        background:#2563eb;
+                        color:white;
+                        border:none;
+                        padding:8px 12px;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-right:5px;
+                    "
+
+                >
+                    View
+                </button>
+
+                <button
+
+                    onclick="editPost(${index})"
+
+                    style="
+                        background:#f59e0b;
+                        color:white;
+                        border:none;
+                        padding:8px 12px;
+                        border-radius:6px;
+                        cursor:pointer;
+                        margin-right:5px;
+                    "
+
+                >
+                    Edit
+                </button>
+
+                <button
+
+                    onclick="deletePost(${index})"
+
+                    style="
+                        background:#dc2626;
+                        color:white;
+                        border:none;
+                        padding:8px 12px;
+                        border-radius:6px;
+                        cursor:pointer;
+                    "
+
+                >
+                    Delete
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
+        
+      });
+      
+    }
+    
+    // =========================
+    // VIEW POST
+    // =========================
+    
+    window.viewPost = function(index) {
+      
+      const post = posts[index];
+      
+      alert(
+        
+        "TITLE: " + post.title +
+        
+        "\n\nAUTHOR: " + post.author +
+        
+        "\n\nCONTENT:\n" + post.content
+        
+      );
+      
+    };
+    
+    // =========================
+    // EDIT POST
+    // =========================
+    
+    window.editPost = async function(index) {
+      
+      const post = posts[index];
+      
+      const newTitle = prompt(
+        "Edit Title",
+        post.title
+      );
+      
+      if (newTitle === null) return;
+      
+      const newExcerpt = prompt(
+        "Edit Excerpt",
+        post.excerpt
+      );
+      
+      if (newExcerpt === null) return;
+      
+      const newContent = prompt(
+        "Edit Content",
+        post.content
+      );
+      
+      if (newContent === null) return;
+      
+      try {
+        
+        await updateDoc(
+          
+          doc(
+            db,
+            "posts",
+            post.firebaseId
+          ),
+          
+          {
+            
+            title: newTitle,
+            
+            excerpt: newExcerpt,
+            
+            content: newContent
+            
+          }
+          
+        );
+        
+        alert("Post Updated");
+        
+        loadPosts();
+        
+      }
+      
+      catch (error) {
+        
+        console.error(error);
+        
+        alert("Failed to update post");
+        
+      }
+      
+    };
+    
+    // =========================
+    // DELETE POST
+    // =========================
+    
+    window.deletePost = async function(index) {
+      
+      const post = posts[index];
+      
+      const confirmDelete = confirm(
+        "Delete this post?"
+      );
+      
+      if (!confirmDelete) return;
+      
+      try {
+        
+        await deleteDoc(
+          
+          doc(
+            db,
+            "posts",
+            post.firebaseId
+          )
+          
+        );
+        
+        alert("Post Deleted");
+        
+        loadPosts();
+        
+      }
+      
+      catch (error) {
+        
+        console.error(error);
+        
+        alert("Failed to delete post");
+        
+      }
+      
+    };
+    
+    // =========================
+    // START
+    // =========================
+    
+    loadPosts();
+  </script>
+  
+</body>
+
+</html>
