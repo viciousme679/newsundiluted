@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story - NewsUndiluted</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: #f4f4f4;
+            color: #111827;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        
+        .story-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .story-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+     h1 {
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-family: "Libre Baskerville", serif;
+}
+        
+        .meta {
+            color: gray;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .story-content {
+                font-size: 30px;
+                line-height: 1.9;
+                letter-spacing: 0.2px;
+            }
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            background: #111827;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        
+        #darkModeBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border: none;
+            background: #111827;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        /* DARK MODE */
+        
+        .dark-mode {
+            background: #111827;
+            color: white;
+        }
+        
+        .dark-mode .story-container {
+            background: #1f2937;
+            color: white;
+        }
+        
+        .dark-mode .meta {
+            color: #d1d5db;
+        }
+    </style>
+    
+</head>
+
+<body>
+    
+    <!-- <button id="darkModeBtn">
+        🌙
+    </button>-->
+    
+    <div class="story-container">
+        
+        <!--<a href="allarticles.html" class="back-btn">
+            ← Back
+        </a>-->
+        
+        <div id="story"></div>
+        
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        
+        import {
+            
+            getFirestore,
+            collection,
+            getDocs
+            
+        }
+        
+        from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+        
+        // =========================
+        // FIREBASE CONFIG
+        // =========================
+        
+        const firebaseConfig = {
+            
+            apiKey: "AIzaSyB06tEmKKCLeA8bOhTWb_wE08I8V-1DduM",
+            
+            authDomain: "sunraynews-5443b.firebaseapp.com",
+            
+            projectId: "sunraynews-5443b",
+            
+            storageBucket: "sunraynews-5443b.firebasestorage.app",
+            
+            messagingSenderId: "1061115545146",
+            
+            appId: "1:1061115545146:web:f3a70f1efb304637809703",
+            
+            measurementId: "G-3WT5TKZW27"
+            
+        };
+        
+        // =========================
+        // INITIALIZE
+        // =========================
+        
+        const app = initializeApp(firebaseConfig);
+        
+        const db = getFirestore(app);
+        
+        // =========================
+        // GET SLUG
+        // =========================
+        
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+        
+        const slug = params.get("slug");
+        
+        // =========================
+        // STORY CONTAINER
+        // =========================
+        
+        const story =
+            document.getElementById("story");
+        
+        // =========================
+        // LOAD STORY FROM FIREBASE
+        // =========================
+        
+        async function loadStory() {
+            
+            try {
+                
+                const querySnapshot =
+                    await getDocs(
+                        collection(db, "posts")
+                    );
+                
+                let foundPost = null;
+                
+                querySnapshot.forEach((doc) => {
+                    
+                    const post = doc.data();
+                    
+                    if (post.slug === slug) {
+                        
+                        foundPost = post;
+                        
+                    }
+                    
+                });
+                
+                // =========================
+                // NOT FOUND
+                // =========================
+                
+                if (!foundPost) {
+                    
+                    story.innerHTML = `
+                <h2>
+                    Story not found.
+                </h2>
+            `;
+                    
+                    return;
+                    
+                }
+                
+                // =========================
+                // DISPLAY STORY
+                // =========================
+                
+                story.innerHTML = `
+
+            ${foundPost.image ? `
+                <img
+                    src="${foundPost.image}"
+                    class="story-image"
+                >
+            ` : ""}
+
+            <h1>
+                ${foundPost.title}
+            </h1>
+
+            <div class="meta">
+
+                By
+                ${foundPost.author || "Admin"}
+
+                •
+
+                ${foundPost.date}
+
+            </div>
+
+            <div class="story-content">
+
+                ${foundPost.content || ""}
+
+            </div>
+
+        `;
+                
+            }
+            
+            catch (error) {
+                
+                console.error(error);
+                
+                story.innerHTML = `
+            <h2>
+                Failed to load story.
+            </h2>
+        `;
+                
+            }
+            
+        }
+        
+        // =========================
+        // LOAD STORY
+        // =========================
+        
+        loadStory();
+        
+        const darkBtn = document.getElementById("darkModeBtn");
+        
+        function applyTheme() {
+            const mode = localStorage.getItem("darkMode");
+            
+            if (mode === "enabled") {
+                document.body.classList.add("dark-mode");
+                
+                if (darkBtn) darkBtn.textContent = "☀️";
+            } else {
+                document.body.classList.remove("dark-mode");
+                
+                if (darkBtn) darkBtn.textContent = "🌙";
+            }
+        }
+        
+        applyTheme();
+        
+        if (darkBtn) {
+            darkBtn.addEventListener("click", () => {
+                
+                if (document.body.classList.contains("dark-mode")) {
+                    localStorage.setItem("darkMode", "disabled");
+                } else {
+                    localStorage.setItem("darkMode", "enabled");
+                }
+                
+                applyTheme();
+            });
+        }
+    </script>
+</body>
+
+</html>
