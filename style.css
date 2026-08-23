@@ -1,0 +1,291 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            color: white;
+            padding: 20px;
+        }
+        
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+        }
+        
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+        
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        
+        .sidebar ul li a:hover {
+            background: #374151;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .topbar h1 {
+            font-size: 28px;
+        }
+        
+        /* Dashboard Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h3 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .card p {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        /* Form Section */
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        button {
+            background: #111827;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        button:hover {
+            background: #374151;
+        }
+        
+        /* Posts Table */
+        .posts-table {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th,
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        table th {
+            background: #f9fafb;
+        }
+        
+        .edit-btn {
+            background: #2563eb;
+            margin-right: 5px;
+        }
+        
+        .delete-btn {
+            background: #dc2626;
+        }
+        
+        .edit-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+        
+        @media(max-width:768px) {
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+        }
+        
+        /* Dropdown Navbar */
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-btn {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 45px;
+            background: white;
+            min-width: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .dropdown-content a {
+            color: #111827;
+            padding: 12px 15px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f3f4f6;
+        }
+        
+        /* Show dropdown on hover */
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        /* Topbar Layout */
+        .topbar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Dropdown */
+        .nav-dropdown {
+            position: relative;
+        }
+        
+        .admin-menu-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #111827;
+        }
+        
+        /* Dropdown Content */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            min-width: 220px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .dropdown-content a {
+            display: block;
+            padding: 14px 18px;
+            text-decoration: none;
+            color: #111827;
+            transition: 0.3s;
+        }
+        
+        .dropdown-content a:hover {
+            background: #f3f4f6;
+        }
+        
+        /* Show Dropdown */
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        
