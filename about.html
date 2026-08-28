@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About - PivotNews</title>
+    
+   <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background: #f3f4f6;
+        color: #111827;
+        line-height: 1.7;
+        transition: 0.3s;
+    }
+
+    /* =========================================
+       HEADER
+    ========================================= */
+
+    header {
+        width: 100%;
+        background: #111827;
+        color: white;
+
+        padding: 20px 8%;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 20px;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+
+        white-space: nowrap;
+    }
+
+    /* =========================================
+       NAVIGATION
+    ========================================= */
+
+    nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 20px;
+
+        flex-wrap: wrap;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+
+        transition: 0.3s;
+
+        white-space: nowrap;
+    }
+
+    nav a:hover {
+        color: #d1d5db;
+    }
+
+    /* =========================================
+       DARK MODE BUTTON
+    ========================================= */
+
+    #darkModeBtn {
+        border: none;
+
+        width: 45px;
+        height: 45px;
+
+        border-radius: 12px;
+
+        cursor: pointer;
+
+        font-size: 18px;
+
+        background: white;
+
+        color: #111827;
+
+        flex-shrink: 0;
+    }
+
+    #darkModeBtn:hover {
+        background: #e5e7eb;
+    }
+
+    /* =========================================
+       HERO
+    ========================================= */
+
+    .hero {
+        width: 100%;
+
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #374151
+            );
+
+        color: white;
+
+        padding: 80px 8%;
+
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+
+        line-height: 1.2;
+
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        width: 100%;
+        max-width: 700px;
+
+        margin: auto;
+
+        font-size: 18px;
+
+        line-height: 1.7;
+
+        color: #e5e7eb;
+    }
+
+    /* =========================================
+       MAIN CONTAINER
+    ========================================= */
+
+    .container {
+        width: 90%;
+
+        max-width: 1100px;
+
+        margin: auto;
+
+        padding: 60px 0;
+    }
+
+    /* =========================================
+       SECTIONS
+    ========================================= */
+
+    .section {
+        width: 100%;
+
+        background: white;
+
+        padding: 35px;
+
+        border-radius: 20px;
+
+        margin-bottom: 30px;
+
+        box-shadow:
+            0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .section h2 {
+        margin-bottom: 15px;
+
+        color: #111827;
+
+        font-size: 25px;
+
+        line-height: 1.3;
+    }
+
+    .section p {
+        color: #4b5563;
+
+        line-height: 1.7;
+
+        overflow-wrap: break-word;
+    }
+
+    /* =========================================
+       VALUES
+    ========================================= */
+
+    .values {
+        width: 100%;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+
+        gap: 20px;
+
+        margin-top: 25px;
+    }
+
+    .value-card {
+        width: 100%;
+
+        background: #f9fafb;
+
+        padding: 25px;
+
+        border-radius: 16px;
+
+        transition: 0.3s;
+    }
+
+    .value-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .value-card h3 {
+        margin-bottom: 10px;
+
+        line-height: 1.4;
+    }
+
+    .value-card p {
+        font-size: 15px;
+
+        line-height: 1.6;
+    }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+
+    footer {
+        width: 100%;
+
+        background: #111827;
+
+        color: white;
+
+        text-align: center;
+
+        padding: 20px;
+
+        margin-top: 40px;
+    }
+
+    footer p {
+        font-size: 14px;
+
+        line-height: 1.5;
+    }
+
+    /* =========================================
+       DARK MODE
+    ========================================= */
+
+    .dark-mode {
+        background: #111827;
+        color: white;
+    }
+
+    .dark-mode header {
+        background: #0f172a;
+    }
+
+    .dark-mode .section {
+        background: #1f2937;
+        color: white;
+    }
+
+    .dark-mode .value-card {
+        background: #374151;
+        color: white;
+    }
+
+    .dark-mode .section h2 {
+        color: white;
+    }
+
+    .dark-mode .section p,
+    .dark-mode .value-card p,
+    .dark-mode .hero p {
+        color: #d1d5db;
+    }
+
+    .dark-mode footer {
+        background: #0f172a;
+    }
+
+    .dark-mode #darkModeBtn {
+        background: #374151;
+        color: white;
+    }
+
+    .dark-mode #darkModeBtn:hover {
+        background: #4b5563;
+    }
+
+    /* =========================================
+       LARGE DESKTOP
+    ========================================= */
+
+    @media (min-width: 1200px) {
+
+        header {
+            padding-left: 8%;
+            padding-right: 8%;
+        }
+
+        .hero {
+            padding-top: 90px;
+            padding-bottom: 90px;
+        }
+
+    }
+
+    /* =========================================
+       TABLETS
+       769px - 1000px
+    ========================================= */
+
+    @media (max-width: 1000px) {
+
+        header {
+            padding: 18px 5%;
+        }
+
+        .logo {
+            font-size: 26px;
+        }
+
+        nav {
+            gap: 15px;
+        }
+
+        .hero {
+            padding: 65px 5%;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+        }
+
+        .hero p {
+            font-size: 17px;
+        }
+
+        .container {
+            width: 92%;
+
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .section {
+            padding: 30px;
+        }
+
+    }
+
+    /* =========================================
+       SMALL TABLETS
+       601px - 768px
+    ========================================= */
+
+    @media (max-width: 768px) {
+
+        header {
+            padding: 16px 5%;
+
+            justify-content: center;
+        }
+
+        .logo {
+            width: 100%;
+
+            text-align: center;
+
+            font-size: 25px;
+        }
+
+        nav {
+            gap: 15px;
+
+            width: auto;
+        }
+
+        #darkModeBtn {
+            width: 42px;
+            height: 42px;
+        }
+
+        .hero {
+            padding: 55px 5%;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 16px;
+        }
+
+        .container {
+            width: 92%;
+
+            padding: 45px 0;
+        }
+
+        .section {
+            padding: 28px;
+
+            border-radius: 16px;
+        }
+
+        .section h2 {
+            font-size: 23px;
+        }
+
+        .values {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 15px;
+        }
+
+        .value-card {
+            padding: 20px;
+        }
+
+    }
+
+    /* =========================================
+       PHONES
+       501px - 600px
+    ========================================= */
+
+    @media (max-width: 600px) {
+
+        header {
+            width: 100%;
+
+            padding: 14px 15px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 23px;
+        }
+
+        nav {
+            width: 100%;
+
+            gap: 12px;
+
+            justify-content: center;
+        }
+
+        nav a {
+            font-size: 14px;
+        }
+
+        #darkModeBtn {
+            width: 40px;
+            height: 40px;
+
+            font-size: 16px;
+        }
+
+        .hero {
+            padding: 50px 15px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+
+            line-height: 1.25;
+        }
+
+        .hero p {
+            font-size: 15px;
+
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 94%;
+
+            padding: 35px 0;
+        }
+
+        .section {
+            padding: 22px;
+
+            border-radius: 14px;
+
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 21px;
+
+            margin-bottom: 12px;
+        }
+
+        .section p {
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+        .values {
+            grid-template-columns: 1fr;
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+        .value-card {
+            padding: 20px;
+        }
+
+        .value-card h3 {
+            font-size: 17px;
+        }
+
+        .value-card p {
+            font-size: 14px;
+        }
+
+        footer {
+            padding: 18px 12px;
+
+            margin-top: 20px;
+        }
+
+        footer p {
+            font-size: 12px;
+        }
+
+    }
+
+    /* =========================================
+       VERY SMALL PHONES
+       400px and below
+    ========================================= */
+
+    @media (max-width: 400px) {
+
+        header {
+            padding: 12px 10px;
+
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 21px;
+        }
+
+        nav {
+            gap: 9px;
+        }
+
+        nav a {
+            font-size: 12px;
+        }
+
+        #darkModeBtn {
+            width: 38px;
+            height: 38px;
+
+            font-size: 15px;
+        }
+
+        .hero {
+            padding: 40px 12px;
+        }
+
+        .hero h1 {
+            font-size: 27px;
+
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 13px;
+        }
+
+        .container {
+            width: 94%;
+
+            padding: 25px 0;
+        }
+
+        .section {
+            padding: 18px;
+
+            border-radius: 12px;
+
+            margin-bottom: 15px;
+        }
+
+        .section h2 {
+            font-size: 19px;
+        }
+
+        .section p {
+            font-size: 13px;
+
+            line-height: 1.65;
+        }
+
+        .value-card {
+            padding: 17px;
+        }
+
+        .value-card h3 {
+            font-size: 16px;
+        }
+
+        .value-card p {
+            font-size: 13px;
+        }
+
+        footer {
+            padding: 15px 8px;
+        }
+
+        footer p {
+            font-size: 11px;
+        }
+
+    }
+
+    /* =========================================
+       EXTREMELY SMALL PHONES
+       320px and below
+    ========================================= */
+
+    @media (max-width: 320px) {
+
+        .logo {
+            font-size: 19px;
+        }
+
+        nav {
+            gap: 7px;
+        }
+
+        nav a {
+            font-size: 11px;
+        }
+
+        #darkModeBtn {
+            width: 35px;
+            height: 35px;
+
+            font-size: 13px;
+        }
+
+        .hero {
+            padding: 35px 10px;
+        }
+
+        .hero h1 {
+            font-size: 24px;
+        }
+
+        .hero p {
+            font-size: 12px;
+        }
+
+        .container {
+            width: 95%;
+        }
+
+        .section {
+            padding: 15px;
+        }
+
+        .section h2 {
+            font-size: 18px;
+        }
+
+        .section p {
+            font-size: 12px;
+        }
+
+        .value-card {
+            padding: 14px;
+        }
+
+        .value-card h3 {
+            font-size: 15px;
+        }
+
+        .value-card p {
+            font-size: 12px;
+        }
+
+        footer p {
+            font-size: 10px;
+        }
+
+    }
+</style>
+</head>
+
+<body>
+    
+    <!-- HEADER -->
+    
+    <header>
+        
+        <div class="logo">
+            PivotNews
+        </div>
+        
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="allarticles.html">News</a>
+        </nav>
+        
+        <button id="darkModeBtn">🌙</button>
+        
+    </header>
+    
+    <!-- HERO -->
+    
+    <section class="hero">
+        
+        <h1>About PivotNews</h1>
+        
+        <p>
+            Delivering fast, reliable and engaging news stories
+            from around the world. PivotNews is built to inform,
+            inspire and connect readers everywhere.
+        </p>
+        
+    </section>
+    
+    <!-- CONTENT -->
+    
+    <div class="container">
+        
+        <div class="section">
+            
+            <h2>Who We Are</h2>
+            
+            <p>
+                PivotNews is an independent digital news platform
+                focused on publishing timely stories across politics,
+                entertainment, sports, technology and global events.
+                Our mission is to provide clear and trustworthy
+                journalism for readers in every corner of the world.
+            </p>
+            
+        </div>
+        
+        <div class="section">
+            
+            <h2>Our Mission</h2>
+            
+            <p>
+                We aim to make news accessible, modern and engaging.
+                By combining technology with journalism, PivotNews
+                creates a platform where stories can be shared quickly
+                while maintaining quality and credibility.
+            </p>
+            
+        </div>
+        
+        <div class="section">
+            
+            <h2>What We Value</h2>
+            
+            <div class="values">
+                
+                <div class="value-card">
+                    <h3>📰 Accuracy</h3>
+                    <p>
+                        We prioritize truthful and verified reporting.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>⚡ Speed</h3>
+                    <p>
+                        Breaking stories delivered as events happen.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>🌍 Global Reach</h3>
+                    <p>
+                        Covering stories from different parts of the world.
+                    </p>
+                </div>
+                
+                <div class="value-card">
+                    <h3>💬 Community</h3>
+                    <p>
+                        Encouraging discussions and reader engagement.
+                    </p>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <!-- FOOTER -->
+    
+    <footer>
+        <p>&copy; 2026 The PivotNews. All Rights Reserved.</p>
+    </footer>
+    
+    <script>
+        const darkBtn = document.getElementById("darkModeBtn");
+        
+        function applyTheme() {
+            const mode = localStorage.getItem("darkMode");
+            
+            if (mode === "enabled") {
+                document.body.classList.add("dark-mode");
+                
+                if (darkBtn) darkBtn.textContent = "☀️";
+            } else {
+                document.body.classList.remove("dark-mode");
+                
+                if (darkBtn) darkBtn.textContent = "🌙";
+            }
+        }
+        
+        applyTheme();
+        
+        if (darkBtn) {
+            darkBtn.addEventListener("click", () => {
+                
+                if (document.body.classList.contains("dark-mode")) {
+                    localStorage.setItem("darkMode", "disabled");
+                } else {
+                    localStorage.setItem("darkMode", "enabled");
+                }
+                
+                applyTheme();
+            });
+        }
+    </script>
+</body>
+
+</html>
